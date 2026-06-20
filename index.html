@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MathRush - Educational Endless Runner</title>
+  <!-- Modern clean typography from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%2300f0ff'/%3E%3Ctext x='50' y='62' text-anchor='middle' font-size='60' fill='white' font-family='Outfit, sans-serif'%3EM%3C/text%3E%3C/svg%3E" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Main Game Container -->
+  <div id="game-container">
+    
+    <!-- Screen 1: Main Menu -->
+    <div id="screen-main-menu" class="game-screen active">
+      <div class="menu-box">
+        <h1 class="game-title">Math<span class="highlight">Rush</span></h1>
+        
+        <div class="narrator-container">
+          <p id="narrator-text" class="narrator-text">
+            Welcome to MathRush! Run, solve, and challenge your mathematical abilities. Complete levels, earn points, and become a MathRush champion.
+          </p>
+        </div>
+        
+        <!-- Level Selector: quick choose which level to start -->
+        <div class="level-selector">
+          <label class="level-label">Start Level:</label>
+          <div class="level-options">
+            <button class="level-btn active" data-level="1">Level 1</button>
+            <button class="level-btn" data-level="2">Level 2</button>
+            <button class="level-btn" data-level="3">Level 3</button>
+          </div>
+        </div>
+        
+        <div class="menu-buttons">
+          <button id="btn-play" class="btn btn-primary">Play Game</button>
+          <button id="btn-instructions" class="btn btn-secondary">Instructions</button>
+          <button id="btn-leaderboard" class="btn btn-secondary">Leaderboard</button>
+          <button id="btn-exit" class="btn btn-danger">Exit</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 2: Instructions -->
+    <div id="screen-instructions" class="game-screen">
+      <div class="menu-box text-left">
+        <h2>HOW TO PLAY</h2>
+        
+        <div class="instructions-content">
+          <div class="instruction-group">
+            <h3>🏃 Movement & Controls</h3>
+            <ul>
+              <li><strong>Left Arrow:</strong> Switch to the left lane</li>
+              <li><strong>Right Arrow:</strong> Switch to the right lane</li>
+              <li><strong>Up Arrow:</strong> Jump (for obstacle-dodging feel)</li>
+            </ul>
+          </div>
+          
+          <div class="instruction-group">
+            <h3>✏️ Solving Math Questions</h3>
+            <ul>
+              <li>Every few seconds, a math question popup appears with 3 options.</li>
+              <li>Press **1, 2, or 3** on your keyboard, or **click/tap** the answers.</li>
+              <li>Solve questions correctly to keep your runner's speed high.</li>
+              <li>Wrong answers cause you to slow down temporarily and lose a life.</li>
+            </ul>
+          </div>
+          
+          <div class="instruction-group">
+            <h3>🏆 Scoring & Levels</h3>
+            <ul>
+              <li><strong>Correct Answer:</strong> +10 points (Level 3 awards +20 points!)</li>
+              <li><strong>Fast Answer (under 3s):</strong> +5 points speed bonus</li>
+              <li><strong>Level Completion:</strong> +50 points bonus</li>
+              <li>Answer <strong>10 questions correctly</strong> to complete a level.</li>
+              <li>You have <strong>3 attempts (lives)</strong> per level to complete it.</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="menu-buttons flex-row">
+          <button id="btn-back-to-menu-from-inst" class="btn btn-secondary">Back to Menu</button>
+          <button id="btn-start-game" class="btn btn-primary">Start Game</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 3: Gameplay -->
+    <div id="screen-gameplay" class="game-screen">
+      <!-- HUD Overlay -->
+      <div id="hud">
+        <div class="hud-item">
+          <span class="label">LEVEL</span>
+          <span id="hud-level" class="value text-cyan">1</span>
+        </div>
+        <div class="hud-item">
+          <span class="label">SCORE</span>
+          <span id="hud-score" class="value text-green">0000</span>
+        </div>
+        <div class="hud-item">
+          <span class="label">ACCURACY</span>
+          <span id="hud-accuracy" class="value text-yellow">100%</span>
+        </div>
+        <div class="hud-item">
+          <span class="label">LIVES</span>
+          <span id="hud-lives" class="value text-red">❤️❤️❤️</span>
+        </div>
+        <div class="hud-item flex-grow">
+          <span class="label">PROGRESS</span>
+          <div class="progress-bar-outer">
+            <div id="hud-progress-fill" class="progress-bar-inner"></div>
+          </div>
+          <span id="hud-progress-text" class="value mini">0/10</span>
+        </div>
+        <button id="btn-pause-game" class="hud-pause-btn">||</button>
+      </div>
+
+      <!-- Main Action Canvas -->
+      <canvas id="game-canvas"></canvas>
+
+      <!-- Question Panel (Pop-up inside gameplay) -->
+      <div id="question-panel" class="question-panel hidden">
+        <div class="timer-line">
+          <div id="question-timer-fill" class="timer-fill"></div>
+        </div>
+        <div class="question-header">MATH CHALLENGE!</div>
+        <div id="question-text" class="question-text">12 + 7 = ?</div>
+        <div class="question-options">
+          <button id="option-a" class="opt-btn" data-index="0">
+            <span class="key-hint">1</span> <span class="opt-text" id="opt-a-text">17</span>
+          </button>
+          <button id="option-b" class="opt-btn" data-index="1">
+            <span class="key-hint">2</span> <span class="opt-text" id="opt-b-text">19</span>
+          </button>
+          <button id="option-c" class="opt-btn" data-index="2">
+            <span class="key-hint">3</span> <span class="opt-text" id="opt-c-text">21</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Level Complete Confirmation Overlay -->
+      <div id="screen-level-complete" class="level-complete-overlay hidden">
+        <div class="level-complete-box">
+          <h2 id="level-complete-title">YOU WIN</h2>
+          <p id="level-complete-message" class="narrator-text">Level complete! Continue to the next level or return to the menu?</p>
+          <div class="level-complete-buttons">
+            <button id="btn-continue-level" class="btn btn-primary">Continue</button>
+            <button id="btn-exit-to-menu" class="btn btn-secondary">Exit</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Speed & Streak Indicator Overlay -->
+      <div id="gameplay-feedback" class="feedback-overlay">
+        <div id="speed-meter" class="speed-container">
+          <span class="speed-label">SPEED:</span>
+          <div class="speed-bar-outer">
+            <div id="speed-bar-fill" class="speed-bar-inner"></div>
+          </div>
+          <span id="speed-value" class="speed-text">100 km/h</span>
+        </div>
+        <div id="streak-indicator" class="streak-container hidden">
+          🔥 <span id="streak-count">3</span> Streak!
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 4: Leaderboard -->
+    <div id="screen-leaderboard" class="game-screen">
+      <div class="menu-box">
+        <h2>LEADERBOARD</h2>
+        
+        <div class="leaderboard-table-container">
+          <table class="leaderboard-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Player</th>
+                <th>Score</th>
+                <th>Accuracy</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-list">
+              <!-- Dynamically populated via Javascript -->
+            </tbody>
+          </table>
+        </div>
+        
+        <button id="btn-back-to-menu-from-leaderboard" class="btn btn-secondary">Back to Main Menu</button>
+      </div>
+    </div>
+
+    <!-- Screen 5: Game End (Win / Game Over Screen) -->
+    <div id="screen-game-end" class="game-screen">
+      <div class="menu-box">
+        <h2 id="game-end-title">CONGRATULATIONS!</h2>
+        
+        <div class="narrator-container">
+          <p id="game-end-message" class="narrator-text">
+            Congratulations! You have mastered the MathRush challenge and demonstrated exceptional mathematical skills.
+          </p>
+        </div>
+
+        <!-- End Game Statistics Grid -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-lbl">Final Score</span>
+            <span id="end-score" class="stat-val text-green">1200</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-lbl">Accuracy</span>
+            <span id="end-accuracy" class="stat-val text-yellow">95%</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-lbl">Levels Completed</span>
+            <span id="end-levels" class="stat-val text-cyan">3</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-lbl">Fastest Answer</span>
+            <span id="end-fastest-time" class="stat-val text-pink">1.8s</span>
+          </div>
+          <div class="stat-card full-width">
+            <span class="stat-lbl">Fast Answer Bonuses</span>
+            <span id="end-bonuses" class="stat-val text-green">8 (+40 pts)</span>
+          </div>
+        </div>
+
+        <!-- Name Input for Leaderboard -->
+        <div id="leaderboard-entry-container" class="leaderboard-input-box">
+          <p>Enter your name to save your score:</p>
+          <div class="input-row">
+            <input type="text" id="player-name-input" maxlength="15" placeholder="Player Name" value="Runner">
+            <button id="btn-save-score" class="btn btn-primary btn-small">Save Score</button>
+          </div>
+          <span id="save-status" class="save-status-text"></span>
+        </div>
+
+        <div class="menu-buttons">
+          <button id="btn-play-again" class="btn btn-primary">Play Again</button>
+          <button id="btn-view-leaderboard-end" class="btn btn-secondary">View Leaderboard</button>
+          <button id="btn-menu-end" class="btn btn-secondary">Return to Main Menu</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 6: Pause Overlay (Modal Overlay) -->
+    <div id="screen-pause-overlay" class="pause-overlay-container hidden">
+      <div class="pause-box">
+        <h2>GAME PAUSED</h2>
+        <p>Take a breath! Ready to resume running?</p>
+        <div class="pause-buttons">
+          <button id="btn-resume" class="btn btn-primary">Resume</button>
+          <button id="btn-restart" class="btn btn-secondary">Restart Level</button>
+          <button id="btn-main-menu" class="btn btn-danger">Main Menu</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Embed game assets & scripts -->
+  <script src="questions.js"></script>
+  <script src="script.js"></script>
+  <script src="ui-fix.js"></script>
+</body>
+</html>
