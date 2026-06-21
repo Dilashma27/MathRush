@@ -10,7 +10,7 @@ const V_HEIGHT = 800;
 
 // Game State Object
 const gameState = {
-  activeScreen: 'main-menu',
+  activeScreen: 'landing',
   score: 0,
   accuracy: 100,
   correctCount: 0,
@@ -629,8 +629,16 @@ document.getElementById('btn-leaderboard').addEventListener('click', () => {
 });
 
 document.getElementById('btn-exit').addEventListener('click', () => {
-  // Exit game: show exit screen or reset. Since standard exit on web doesn't close tabs, we alert.
-  document.getElementById('narrator-text').innerText = "Thanks for playing MathRush! Refresh the browser to run again.";
+  showScreen('screen-landing');
+});
+
+document.getElementById('btn-landing-enter').addEventListener('click', () => {
+  showScreen('screen-main-menu');
+});
+
+document.getElementById('btn-landing-instructions').addEventListener('click', () => {
+  initAudio();
+  showScreen('screen-instructions');
 });
 
 document.getElementById('btn-back-to-menu-from-inst').addEventListener('click', () => {
@@ -668,7 +676,7 @@ if (levelButtons && levelButtons.length) {
 
 // Pause Menu Buttons
 document.getElementById('btn-resume').addEventListener('click', () => {
-  resumeGame();
+  startResumeCountdown();
 });
 
 document.getElementById('btn-continue-level').addEventListener('click', () => {
@@ -745,6 +753,34 @@ function resumeGame() {
   gameState.isPaused = false;
   document.getElementById('screen-pause-overlay').classList.remove('active');
   document.getElementById('screen-pause-overlay').classList.add('hidden');
+}
+
+function startResumeCountdown() {
+  const pauseScreen = document.getElementById('screen-pause-overlay');
+  const countdownScreen = document.getElementById('screen-countdown-overlay');
+  const countdownText = document.getElementById('countdown-text');
+  
+  pauseScreen.classList.remove('active');
+  pauseScreen.classList.add('hidden');
+  countdownScreen.classList.remove('hidden');
+  countdownText.innerText = '3';
+  gameState.isPaused = true;
+  
+  let count = 3;
+  const tick = () => {
+    count -= 1;
+    if (count > 0) {
+      countdownText.innerText = String(count);
+      setTimeout(tick, 900);
+    } else if (count === 0) {
+      countdownText.innerText = 'GO';
+      setTimeout(tick, 700);
+    } else {
+      countdownScreen.classList.add('hidden');
+      resumeGame();
+    }
+  };
+  setTimeout(tick, 900);
 }
 
 function gameOver() {

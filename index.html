@@ -15,8 +15,24 @@
   <!-- Main Game Container -->
   <div id="game-container">
     
-    <!-- Screen 1: Main Menu -->
-    <div id="screen-main-menu" class="game-screen active">
+    <!-- Screen 1: Landing Page -->
+    <div id="screen-landing" class="game-screen active">
+      <div class="menu-box">
+        <h1 class="game-title">Welcome to <span class="highlight">MathRush</span></h1>
+        <div class="narrator-container">
+          <p class="narrator-text">
+            Jump into the ultimate math runner challenge. Solve fast, stay alive, and level up your brainpower.
+          </p>
+        </div>
+        <div class="menu-buttons">
+          <button id="btn-landing-enter" class="btn btn-primary">Enter MathRush</button>
+          <button id="btn-landing-instructions" class="btn btn-secondary">How to Play</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 2: Main Menu -->
+    <div id="screen-main-menu" class="game-screen">
       <div class="menu-box">
         <h1 class="game-title">Math<span class="highlight">Rush</span></h1>
         
@@ -257,6 +273,13 @@
           <button id="btn-restart" class="btn btn-secondary">Restart Level</button>
           <button id="btn-main-menu" class="btn btn-danger">Main Menu</button>
         </div>
+      </div>
+    </div>
+
+    <div id="screen-countdown-overlay" class="countdown-overlay hidden">
+      <div class="countdown-box">
+        <div id="countdown-text" class="countdown-text">3</div>
+        <div class="countdown-label">Resuming...</div>
       </div>
     </div>
 
