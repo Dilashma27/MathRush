@@ -99,7 +99,28 @@ function getNextQuestion(level) {
     const levelQuestions = window.MathRushQuestions[level];
     gameState.questionPools[level] = shuffleArray(levelQuestions);
   }
-  return gameState.questionPools[level].pop();
+  // Pop an original question object from the pool
+  const orig = gameState.questionPools[level].pop();
+
+  // Create a shallow copy and shuffle the options so the correct answer
+  // isn't always in the same position. Update the correct index to match
+  // the shuffled options.
+  if (!orig || !Array.isArray(orig.options)) return orig;
+
+  const optionsOrig = [...orig.options];
+  const indices = optionsOrig.map((_, i) => i);
+  const shuffledIndices = shuffleArray(indices);
+  const shuffledOptions = shuffledIndices.map(i => optionsOrig[i]);
+
+  // Find where the original correct option ended up
+  const newCorrectIndex = shuffledIndices.indexOf(orig.correct);
+
+  const q = Object.assign({}, orig, {
+    options: shuffledOptions,
+    correct: newCorrectIndex
+  });
+
+  return q;
 }
 
 // Reset Pools
