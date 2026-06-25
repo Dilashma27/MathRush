@@ -1037,6 +1037,11 @@ function updateGameLogic(dt) {
           for (let p = 0; p < 15; p++) {
             spawnParticle(player.x, player.y, '#ff007f', 4, (Math.random() - 0.5) * 200, (Math.random() - 0.5) * 200, 0.5);
           }
+          // Bump penalty: reduce player's score without removing the obstacle
+          const bumpPenalty = 10;
+          gameState.score = Math.max(0, gameState.score - bumpPenalty);
+          spawnFloatingText(`-${bumpPenalty}`, player.x, player.y - player.jumpY - 45, '#ff007f');
+          updateHUD();
         }
       }
     }
