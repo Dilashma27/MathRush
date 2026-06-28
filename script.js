@@ -222,6 +222,95 @@ window.addEventListener('resize', resizeCanvas);
 // Run once on load
 resizeCanvas();
 
+// Fullscreen / Minimize Helpers
+const gameContainer = document.getElementById('game-container');
+
+function isFullscreenActive() {
+  return !!(
+    document.fullscreenElement ||
+    document.webkitFullscreenElement ||
+    document.mozFullScreenElement ||
+    document.msFullscreenElement
+  );
+}
+
+function updateFullscreenButton() {
+  const btn = document.getElementById('btn-toggle-fullscreen');
+  if (!btn) return;
+  if (isFullscreenActive()) {
+    btn.innerText = '⤡';
+    btn.title = 'Exit fullscreen';
+  } else {
+    btn.innerText = '⤢';
+    btn.title = 'Enter fullscreen';
+  }
+}
+
+async function enterFullscreen() {
+  if (!gameContainer) return;
+  if (gameContainer.classList.contains('compact-mode')) {
+    gameContainer.classList.remove('compact-mode');
+  }
+  if (gameContainer.requestFullscreen) {
+    await gameContainer.requestFullscreen();
+  } else if (gameContainer.webkitRequestFullscreen) {
+    await gameContainer.webkitRequestFullscreen();
+  } else if (gameContainer.mozRequestFullScreen) {
+    await gameContainer.mozRequestFullScreen();
+  } else if (gameContainer.msRequestFullscreen) {
+    await gameContainer.msRequestFullscreen();
+  }
+}
+
+async function exitFullscreen() {
+  if (document.exitFullscreen) {
+    await document.exitFullscreen();
+  } else if (document.webkitExitFullscreen) {
+    await document.webkitExitFullscreen();
+  } else if (document.mozCancelFullScreen) {
+    await document.mozCancelFullScreen();
+  } else if (document.msExitFullscreen) {
+    await document.msExitFullscreen();
+  }
+}
+
+function toggleFullscreen() {
+  if (isFullscreenActive()) {
+    exitFullscreen();
+  } else {
+    enterFullscreen();
+  }
+}
+
+function toggleCompactMode() {
+  const btn = document.getElementById('btn-minimize-screen');
+  if (!gameContainer) return;
+
+  if (isFullscreenActive()) {
+    exitFullscreen();
+  }
+
+  if (gameContainer.classList.contains('compact-mode')) {
+    gameContainer.classList.remove('compact-mode');
+    if (btn) {
+      btn.innerText = '🗕';
+      btn.title = 'Minimize screen';
+    }
+  } else {
+    gameContainer.classList.add('compact-mode');
+    if (btn) {
+      btn.innerText = '🗖';
+      btn.title = 'Restore screen';
+    }
+  }
+  resizeCanvas();
+}
+
+// Update fullscreen label when browser state changes
+document.addEventListener('fullscreenchange', updateFullscreenButton);
+document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
+document.addEventListener('mozfullscreenchange', updateFullscreenButton);
+document.addEventListener('MSFullscreenChange', updateFullscreenButton);
 
 // --- 4. INPUT HANDLING ---
 const keysPressed = {};
@@ -274,6 +363,17 @@ window.addEventListener('keydown', (e) => {
   else if (gameState.activeScreen === 'gameplay' && gameState.isPaused && e.key === 'Escape') {
     e.preventDefault();
     resumeGame();
+  }
+
+  // Global system shortcuts
+  const activeTag = document.activeElement && document.activeElement.tagName;
+  if (!['INPUT', 'TEXTAREA', 'SELECT'].includes(activeTag)) {
+    if (e.key === 'f' || e.key === 'F') {
+      toggleFullscreen();
+    }
+    if (e.key === 'm' || e.key === 'M') {
+      toggleCompactMode();
+    }
   }
 });
 
@@ -680,6 +780,14 @@ document.getElementById('btn-back-to-menu-from-leaderboard').addEventListener('c
 
 document.getElementById('btn-pause-game').addEventListener('click', () => {
   pauseGame();
+});
+
+document.getElementById('btn-toggle-fullscreen').addEventListener('click', () => {
+  toggleFullscreen();
+});
+
+document.getElementById('btn-minimize-screen').addEventListener('click', () => {
+  toggleCompactMode();
 });
 
 // Level selector wiring (main menu)
