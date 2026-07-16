@@ -21,17 +21,66 @@
     
     <!-- Screen 1: Landing Page -->
     <div id="screen-landing" class="game-screen active">
-      <div class="menu-box">
-        <h1 class="game-title">Welcome to Math<span class="highlight">Rush</span></h1>
-        <div class="narrator-container">
-          <p class="narrator-text">
-            Jump into the ultimate math runner challenge. Solve fast, stay alive, and level up your brainpower.
-          </p>
-        </div>
-        <div class="menu-buttons">
-          <button id="btn-landing-enter" class="btn btn-primary">Enter MathRush</button>
-          <button id="btn-landing-instructions" class="btn btn-secondary">How to Play</button>
-        </div>
+      <div class="landing-shell">
+        <header class="landing-nav">
+          <div class="brand">
+            <div class="brand-mark">M</div>
+            <span>MathRush</span>
+          </div>
+          <div class="landing-actions">
+            <button id="btn-toggle-sound" class="icon-pill" type="button" title="Sound on">🔊</button>
+            <button class="icon-pill" type="button" title="Settings">⚙</button>
+            <button class="icon-pill" type="button" title="Language">EN</button>
+          </div>
+        </header>
+
+        <main class="hero-grid">
+          <section class="hero-copy">
+            <p class="eyebrow">Educational endless runner</p>
+            <h1 class="game-title">Math<span class="highlight">Rush</span></h1>
+            <p class="hero-tagline">Run Fast. Think Faster.</p>
+            <p class="hero-description">
+              Solve math challenges, collect coins, avoid obstacles, and beat your highest score.
+            </p>
+            <div class="menu-buttons hero-buttons">
+              <button id="btn-landing-enter" class="btn btn-primary">▶ Play Now</button>
+              <button id="btn-landing-instructions" class="btn btn-secondary">📖 How to Play</button>
+            </div>
+          </section>
+
+          <section class="hero-art" aria-label="MathRush game preview">
+            <div class="scene-glow"></div>
+            <div class="symbol symbol-plus">+</div>
+            <div class="symbol symbol-minus">−</div>
+            <div class="symbol symbol-multiply">×</div>
+            <div class="symbol symbol-divide">÷</div>
+            <div class="symbol symbol-root">√</div>
+            <div class="symbol symbol-pi">π</div>
+            <div class="particle particle-1"></div>
+            <div class="particle particle-2"></div>
+            <div class="particle particle-3"></div>
+            <div class="coin coin-1">◉</div>
+            <div class="coin coin-2">◉</div>
+            <div class="coin coin-3">◉</div>
+
+            <div class="road">
+              <div class="lane lane-left"></div>
+              <div class="lane lane-center"></div>
+              <div class="lane lane-right"></div>
+
+              <div class="runner">
+                <div class="runner-head"></div>
+                <div class="runner-body"></div>
+                <div class="runner-leg runner-leg-left"></div>
+                <div class="runner-leg runner-leg-right"></div>
+              </div>
+
+              <div class="question-popup">12 + 7 = ?</div>
+              <div class="obstacle obstacle-1"></div>
+              <div class="obstacle obstacle-2"></div>
+            </div>
+          </section>
+        </main>
       </div>
     </div>
 

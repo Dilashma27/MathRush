@@ -133,6 +133,7 @@ function resetQuestionPools() {
 
 // --- 2. AUDIO SYNTHESIZER ENGINE (Web Audio API) ---
 let audioCtx = null;
+let soundEnabled = true;
 
 function initAudio() {
   if (audioCtx) return;
@@ -141,8 +142,24 @@ function initAudio() {
   audioCtx = new AudioContext();
 }
 
+function setSoundEnabled(enabled) {
+  soundEnabled = enabled;
+  const btn = document.getElementById('btn-toggle-sound');
+  if (btn) {
+    btn.textContent = enabled ? '🔊' : '🔈';
+    btn.title = enabled ? 'Sound on' : 'Sound off';
+  }
+}
+
+function toggleSound() {
+  setSoundEnabled(!soundEnabled);
+  if (soundEnabled) {
+    initAudio();
+  }
+}
+
 function playSynthSound(freqs, durations, type = 'sine', slideTo = null) {
-  if (!audioCtx) return;
+  if (!soundEnabled || !audioCtx) return;
   
   // Resume context if suspended (browser security autoplays)
   if (audioCtx.state === 'suspended') {
@@ -760,6 +777,10 @@ document.getElementById('btn-landing-enter').addEventListener('click', () => {
 document.getElementById('btn-landing-instructions').addEventListener('click', () => {
   initAudio();
   showScreen('screen-instructions');
+});
+
+document.getElementById('btn-toggle-sound').addEventListener('click', () => {
+  toggleSound();
 });
 
 document.getElementById('btn-back-to-menu-from-inst').addEventListener('click', () => {
